@@ -10,7 +10,9 @@
 #include <linux/videodev2.h>
 #include <sys/mman.h>
 #include <errno.h>
+// #include <signal.h> //信号量
 
+// volatile sig_atomic_t quit_flag = 0;
 struct plane_start
 {
     void *start;
@@ -39,7 +41,7 @@ int main(int argc, char **argv)
     struct buffer *buffers;
     enum v4l2_buf_type type;
 
-    if (argc != 3)
+    if (argc != 3)    //(argc != 2)
     {
         printf("Usage: v4l2_test <frame_num> <save_file>\n");
         printf("example: v4l2_test 10 test.yuv\n");
@@ -54,7 +56,7 @@ int main(int argc, char **argv)
         goto err;
     }
 
-    file_fd = fopen(argv[2], "wb+");
+    file_fd = fopen(argv[2], "wb+");    //argv[1]
     if (!file_fd)
     {
         printf("open save_file: %s fail\n", argv[2]);
@@ -181,7 +183,7 @@ int main(int argc, char **argv)
     struct v4l2_plane *tmp_plane;
     tmp_plane = calloc(num_planes, sizeof(*tmp_plane));
 
-    while (1)
+    while (1)//while (!quit_flag)
     {
         FD_ZERO(&fds);
         FD_SET(fd, &fds);
